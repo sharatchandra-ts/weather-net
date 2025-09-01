@@ -1,10 +1,10 @@
 from fastapi import FastAPI
-from models.weather_model import Weather
+from backend.schemas.weather_schema import WeatherSchema
 
 app = FastAPI()
 
 @app.post('/weatherdata')
-def post_data(data: Weather):
+def post_data(data: WeatherSchema):
     print(data)
     return {'status': 'saved'}
 
