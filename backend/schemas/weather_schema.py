@@ -12,5 +12,5 @@ class WeatherSchema(BaseModel):
                 f"humidity={self.humidity}, "
                 f"light_level={self.light_level}, "
                 f"air_quality={self.air_quality},"
-                f"machine={self.machine})>")    
+                f"machine={self.machine})>")
     
