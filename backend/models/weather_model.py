@@ -12,6 +12,16 @@ class WeatherDB(Base):
     timestamp = Column(DateTime(timezone=True), server_default=func.now(), index=True)
     machine = Column(Integer)
 
+
+    def __init__(self, temperature, humidity, light_level, air_quality, machine, timestamp=None):
+        self.temperature = temperature
+        self.humidity = humidity
+        self.light_level = light_level
+        self.air_quality = air_quality
+        self.machine = machine
+        if timestamp is not None:
+            self.timestamp = timestamp
+
     def __repr__(self):
         return (f"<Weather(id={self.id}, " 
                 f"temperature={self.temperature}, "

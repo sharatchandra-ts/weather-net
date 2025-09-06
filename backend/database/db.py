@@ -6,13 +6,16 @@ from dotenv import load_dotenv
 # Load environment variables from .env
 load_dotenv()
 
-# Example: postgresql+psycopg2://user:password@localhost/mydb
+# Setting default values to handle null errors
+DB_USER = os.getenv("DB_USER", "postgres")
+DB_PASSWORD = os.getenv("DB_PASSWORD", "password")
+DB_HOST = os.getenv("DB_HOST", "localhost")
+DB_PORT = os.getenv("DB_PORT", "5432")   # default 5432
+DB_NAME = os.getenv("DB_NAME", "testdb")
+
+# Example: postgresql+psycopg2://postgres:your_password@localhost:5432/your_database_name
 DATABASE_URL = (
-    f"postgresql://{os.getenv('DB_USER')}:"
-    f"{os.getenv('DB_PASSWORD')}@"
-    f"{os.getenv('DB_HOST')}:"
-    f"{os.getenv('DB_PORT')}/"
-    f"{os.getenv('DB_NAME')}"
+    f"postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 )
 
 # Create SQLAlchemy engine

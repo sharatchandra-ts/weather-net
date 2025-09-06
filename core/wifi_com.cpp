@@ -1,8 +1,5 @@
 #include "wifi_com.h"
-
-const char* WIFI_SSID = "Abheri";
-const char* WIFI_PASS = "phalaisinWCFA";
-const char* SERVER_URL = "http://192.168.68.100:8000/weatherdata";
+#include "secrets.h"
 
 void connectWiFi() {
     WiFi.begin(WIFI_SSID, WIFI_PASS);
@@ -27,6 +24,7 @@ void sendData(float temp, float hum, float ldr, float mq135) {
     }
 
     HTTPClient http;
+    Serial.println("Connecting to server: " + String(SERVER_URL));
     http.begin(SERVER_URL);
 
     // Headers
@@ -38,7 +36,8 @@ void sendData(float temp, float hum, float ldr, float mq135) {
     jsonData += "\"temperature\":" + String(temp, 2) + ",";
     jsonData += "\"humidity\":" + String(hum, 2) + ",";
     jsonData += "\"light_level\":" + String(ldr, 2) + ",";
-    jsonData += "\"air_quality\":" + String(mq135, 2);
+    jsonData += "\"air_quality\":" + String(mq135, 2) + ",";
+    jsonData += "\"machine\":" + String(MACHINE_ID);  // int, not float
     jsonData += "}";
 
     Serial.println("Sending JSON: " + jsonData);
@@ -59,3 +58,4 @@ void sendData(float temp, float hum, float ldr, float mq135) {
 
     http.end();
 }
+
