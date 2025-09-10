@@ -28,6 +28,30 @@ def add_weather(weather: WeatherDB, db: Session):
         print("Error in add_weather:", e)
         db.rollback()
         return None
+    
+def read_weather_all(db: Session):
+    data = None
+    try:
+        data = db.query(WeatherDB).all()
+        if data: return data
+        else: 
+            print('No data found.')
+            return None 
+    except Exception as e:
+        print("Error in read_all_weather:", e)
+        return None
+    
+def read_weather(id: int, db: Session):
+    data = None
+    try:
+        data = db.query(WeatherDB).filter_by(id=id).all()
+        if data: return data
+        else: 
+            print('No data found.')
+            return None 
+    except Exception as e:
+        print("Error in read_all_weather:", e)
+        return None
 
 
 # Delete a given weather object

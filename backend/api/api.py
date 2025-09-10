@@ -12,7 +12,12 @@ def post_data(data: WeatherSchema, db: Session = Depends(op.get_db)):
     op.add_weather(weather=data.map_to_db(), db=db)
     return data
 
-# Endpoint to retrieve weather data (currently returns placeholder)
+# Endpoint to retrieve all weather data
 @router.get('/data')
-def get_data():
-    return {'data': 'no-data'}
+def get_data(db: Session = Depends(op.get_db)):
+    return op.read_weather_all(db=db)
+
+# Endpoint to retrieve weather data by id
+@router.get('/data/{id}')
+def get_data(id:int, db: Session = Depends(op.get_db)):
+    return op.read_weather(id=id, db=db)
