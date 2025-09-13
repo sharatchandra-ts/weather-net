@@ -7,9 +7,10 @@ router = APIRouter()
 
 # Endpoint to add new weather data to the database
 @router.post('/data')
-def post_data(data: WeatherSchema, db: Session = Depends(op.get_db)):
+def post_data(data: list[WeatherSchema], db: Session = Depends(op.get_db)):
     print(data)
-    op.add_weather(weather=data.map_to_db(), db=db)
+    for l in data:
+        op.add_weather(weather=l.map_to_db(), db=db)
     return data
 
 # Endpoint to retrieve all weather data
