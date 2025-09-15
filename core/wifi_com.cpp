@@ -80,13 +80,14 @@ void sendData() {
 }
 
 void readData(float temp, float hum, float ldr, float mq135){
-    if(c_index == BUFFER_SIZE - 1){
-        sendData();
-        c_index = 0;
-    }
 
     reading[c_index].temp = temp;
     reading[c_index].hum = hum;
     reading[c_index].ldr = ldr;
     reading[c_index++].mq135 = mq135;
+
+    if(c_index >= BUFFER_SIZE){
+        sendData();
+        c_index = 0;
+    }
 }
