@@ -11,4 +11,5 @@ extern const char* SERVER_URL;
 // Function declarations
 void connectWiFi();
 bool isWiFiConnected();
-void sendData(float temp, float hum, float ldr, float mq135);
+void sendData();
+void readData(float temp, float hum, float ldr, float mq135);

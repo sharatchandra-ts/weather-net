@@ -1,10 +1,19 @@
 #include "wifi_com.h"
+#include "secrets.h"
 
-const char* WIFI_SSID = "Abheri";
-const char* WIFI_PASS = "phalaisinWCFA";
-const char* SERVER_URL = "http://192.168.68.100:8000/weatherdata";
+struct Reading{
+    float temp;
+    float hum;
+    float ldr;
+    float mq135;
+    int machine = MACHINE_ID;
+};
 
-void connectWiFi() {
+Reading reading[BUFFER_SIZE];
+int c_index = 0;
+
+void connectWiFi()
+{
     WiFi.begin(WIFI_SSID, WIFI_PASS);
     while (WiFi.status() != WL_CONNECTED) {
         Serial.print('.');
@@ -20,13 +29,14 @@ bool isWiFiConnected() {
     return WiFi.status() == WL_CONNECTED;
 }
 
-void sendData(float temp, float hum, float ldr, float mq135) {
+void sendData() {
     if (!isWiFiConnected()) {
         Serial.println("WiFi not connected!");
         return;
     }
 
     HTTPClient http;
+    Serial.println("Connecting to server: " + String(SERVER_URL));
     http.begin(SERVER_URL);
 
     // Headers
@@ -34,12 +44,21 @@ void sendData(float temp, float hum, float ldr, float mq135) {
     http.addHeader("User-Agent", "ESP32-WeatherStation");
 
     // JSON payload
-    String jsonData = "{";
-    jsonData += "\"temperature\":" + String(temp, 2) + ",";
-    jsonData += "\"humidity\":" + String(hum, 2) + ",";
-    jsonData += "\"light_level\":" + String(ldr, 2) + ",";
-    jsonData += "\"air_quality\":" + String(mq135, 2);
-    jsonData += "}";
+    String jsonData = "[";
+    for (int i = 0; i < BUFFER_SIZE; i++){
+        jsonData += "{";
+        jsonData += "\"temperature\":" + String(reading[i].temp, 2) + ",";
+        jsonData += "\"humidity\":" + String(reading[i].hum, 2) + ",";
+        jsonData += "\"light_level\":" + String(reading[i].ldr, 2) + ",";
+        jsonData += "\"air_quality\":" + String(reading[i].mq135, 2) + ",";
+        jsonData += "\"machine\":" + String(reading[i].machine); // int, not float
+        jsonData += "}";
+
+        if (i < BUFFER_SIZE - 1)
+            jsonData += ",";
+    }
+
+    jsonData += "]";
 
     Serial.println("Sending JSON: " + jsonData);
 
@@ -58,4 +77,17 @@ void sendData(float temp, float hum, float ldr, float mq135) {
     }
 
     http.end();
+}
+
+void readData(float temp, float hum, float ldr, float mq135){
+
+    reading[c_index].temp = temp;
+    reading[c_index].hum = hum;
+    reading[c_index].ldr = ldr;
+    reading[c_index++].mq135 = mq135;
+
+    if(c_index >= BUFFER_SIZE){
+        sendData();
+        c_index = 0;
+    }
 }

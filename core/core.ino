@@ -1,6 +1,7 @@
 #include "DHT.h"
 #include "sensors.h"
 #include "wifi_com.h"
+#include "secrets.h"
 
 // Global vars for averaged values
 float avgTemp = 0, avgHum = 0, avgLight = 0, avgAir = 0;
@@ -11,7 +12,7 @@ int count = 0;
 
 // Timing control
 unsigned long lastSendTime = 0; // tracks last send
-const unsigned long sendInterval = 60000; // 60 sec
+const unsigned long sendInterval = SEND_INTERVAL; // milli seconds
 
 void setup() {
   Serial.begin(115200);
@@ -43,7 +44,7 @@ void loop() {
   // Check if 60 seconds have passed
   if (millis() - lastSendTime >= sendInterval) {
     calculateMinuteAverage();
-    sendData(avgTemp, avgHum, avgLight, avgAir);
+    readData(avgTemp, avgHum, avgLight, avgAir);
     lastSendTime = millis(); // reset timer
   }
 

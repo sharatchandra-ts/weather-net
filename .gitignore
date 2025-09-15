@@ -1,0 +1,11 @@
+# Python
+.env
+__pycache__/
+*.pyc
+
+# Arduino/esp
+core/secrets.h
+
+# VSCode / editor junk
+.vscode/
+.idea/
